@@ -87,15 +87,15 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'saral_translation',
+        'NAME': config('DB_NAME'),
 
-        'USER': 'abhinandan',
+        'USER': config('DB_USER'),
 
-        'PASSWORD': '',
+        'PASSWORD': config('DB_PASS'),
 
-        'HOST': 'localhost',
+        'HOST': config('DB_HOST'),
 
-        'PORT': '5432',
+        'PORT': config('DB_PORT'),
 
     }
 }
