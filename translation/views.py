@@ -41,6 +41,7 @@ class MLRequestView(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.G
 class TranslateView(views.APIView):
     """View to get the translation from english to hindi"""
     authentication_classes = (APIAuthentication,)
+
     def post(self, request, endpoint):
         algorithm = MLAlgorithm.objects.filter(parent_endpoint__name__iexact=endpoint).first()
         if not algorithm:
@@ -73,6 +74,19 @@ class TranslateStringView(views.APIView):
         data = {}
         if possible_match is not None:
             data = possible_match.hindi
+            if len(data)<5:
+                translate_obj = Translate()
+                converted_word_array = translate_obj.hin_translate(word)
+                for i in range(len(data),5):
+                    data.__setitem__(converted_word_array[i], 10)
+
+
+        else:
+            translate_obj = Translate()
+            converted_word_array = translate_obj.hin_translate(word)
+            for i in range(5):
+                data.__setitem__(converted_word_array[i], 10)
+
         return Response({'status': 'Success', 'data': data}, status=200)
 
 
