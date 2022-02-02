@@ -58,3 +58,14 @@ class TranslateView(views.APIView):
             return Response(data)
         else:
             return Response({'message': 'Invalid data'}, status=400)
+
+
+class TranslateStringView(views.APIView):
+
+    def get(self, request):
+        word = request.query_params.get('query')
+        possible_match = EnglishToHindiTranslation.objects.filter(english__exact=word).first()
+        data = {}
+        if possible_match is not None:
+            data = possible_match.hindi
+        return Response({'status': 'Success', 'data': data}, status=200)

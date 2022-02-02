@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'translation',
 ]
 
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'saral_translation.urls'
@@ -85,15 +87,15 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': os.environ.get('DB_NAME'),
+        'NAME': 'saral_translation',
 
-        'USER': os.environ.get('DB_USER'),
+        'USER': 'abhinandan',
 
-        'PASSWORD': os.environ.get('DB_PASS'),
+        'PASSWORD': '',
 
-        'HOST': os.environ.get('DB_HOST'),
+        'HOST': 'localhost',
 
-        'PORT': os.environ.get('DB_PORT'),
+        'PORT': '5432',
 
     }
 }
@@ -147,3 +149,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+CORS_ORIGIN_ALLOW_ALL = True
