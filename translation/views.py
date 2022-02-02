@@ -69,23 +69,11 @@ class TranslateStringView(views.APIView):
 
     def get(self, request):
         word = request.query_params.get('query')
-        possible_match = EnglishToHindiTranslation.objects.filter(english__exact=word).first()
+        possible_match = EnglishToHindiTranslation.objects.filter(english__iexact=word).first()
         data = {}
         if possible_match is not None:
             data = possible_match.hindi
         return Response({'status': 'Success', 'data': data}, status=200)
-
-
-class translateAPIView(APIView):
-
-    def get(self, request, given_string):
-        translate_obj = Translate()
-        translate_string = translate_obj.convert(given_string)
-        # serializers = serializers(translate_string, many=True)
-        return Response(translate_string)
-
-    def post(self, request):
-        pass
 
 
 class SearchAndUpdateAPIView(APIView):
@@ -102,4 +90,4 @@ class SearchAndUpdateAPIView(APIView):
             else:
                 add_new = EnglishToHindiTranslation.objects.create(english=key, hindi=data[key])
 
-        return Response({'status': 'Success', 'Success': 'Successfully'}, status=200)
+        return Response({'status': 'Success', 'message': 'Saved Successfully'}, status=200)
