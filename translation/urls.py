@@ -1,7 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import EndpointView, MLAlgoirthmView, MLRequestView, TranslateView, SearchAndUpdateAPIView, \
-    TranslateStringView
+from .views import EndpointView, MLAlgoirthmView, MLRequestView, TranslateView, SearchAndUpdateAPIView, TranslateStringView
 
 router = DefaultRouter()
 router.register(r'endpoints', EndpointView, basename='endpoints')

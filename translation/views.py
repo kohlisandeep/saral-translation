@@ -13,6 +13,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView  # for api
 from rest_framework import viewsets
 from rest_framework import status
+from datetime import datetime
+from pytz import timezone
 
 
 # Create your views here.
@@ -70,22 +72,40 @@ class TranslateStringView(views.APIView):
 
     def get(self, request):
         word = request.query_params.get('query')
+        # print(word)
         possible_match = EnglishToHindiTranslation.objects.filter(english__iexact=word).first()
+        # print(possible_match)
         data = {}
-        if possible_match is not None:
-            data = possible_match.hindi
-            if len(data)<5:
+        if possible_match is not None and possible_match.hindi != {}:
+            data = possible_match.hindi  #{'संदिप': 61, 'संदीप': 9615, 'सन्दीप': 414} getting this as data for every word
+            # print(data)
+            for i in data:
+                print(i) # in data[i] we are getting score and in i we are getting word
+
+                if isinstance(data[i], int):
+                    ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
+                    score=data[i]
+                    data[i] = {'manual': False, 'score': score, 'time': ind_time}
+            if len(data) < 5:
                 translate_obj = Translate()
                 converted_word_array = translate_obj.hin_translate(word)
-                for i in range(len(data),5):
-                    data.__setitem__(converted_word_array[i], 10)
-
+                for i in converted_word_array:
+                    if len(data) >= 5:
+                        break
+                    if i in data.keys():
+                        continue
+                    else:
+                        data.__setitem__(i, {'manual': False, 'score': 10, 'time': ind_time})
 
         else:
             translate_obj = Translate()
             converted_word_array = translate_obj.hin_translate(word)
-            for i in range(5):
-                data.__setitem__(converted_word_array[i], 10)
+
+            for i in range(len(converted_word_array)):
+                if len(data) >= 5:
+                    break
+                ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
+                data.__setitem__(converted_word_array[i], {'manual': False, 'score': 10, 'time': ind_time})
 
         return Response({'status': 'Success', 'data': data}, status=200)
 
@@ -95,8 +115,10 @@ class SearchAndUpdateAPIView(APIView):
     def post(self, request):
 
         data = request.data
+        print(data)
 
         for key in data:
+            print(key)
             record = EnglishToHindiTranslation.objects.filter(english__iexact=key).first()
             if record:
                 record.hindi = data[key]
