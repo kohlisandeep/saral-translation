@@ -72,7 +72,7 @@ class TranslateStringView(views.APIView):
 
     def get(self, request):
         word = request.query_params.get('query')
-        # print(word)
+        # print(word) # in word we are getting english word
         possible_match = EnglishToHindiTranslation.objects.filter(english__iexact=word).first()
         # print(possible_match)
         data = {}
@@ -80,7 +80,7 @@ class TranslateStringView(views.APIView):
             data = possible_match.hindi  #{'संदिप': 61, 'संदीप': 9615, 'सन्दीप': 414} getting this as data for every word
             # print(data)
             for i in data:
-                print(i) # in data[i] we are getting score and in i we are getting word
+                # print(i) # in data[i] we are getting score and in i we are getting word
 
                 if isinstance(data[i], int):
                     ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
@@ -115,10 +115,8 @@ class SearchAndUpdateAPIView(APIView):
     def post(self, request):
 
         data = request.data
-        print(data)
 
         for key in data:
-            print(key)
             record = EnglishToHindiTranslation.objects.filter(english__iexact=key).first()
             if record:
                 record.hindi = data[key]

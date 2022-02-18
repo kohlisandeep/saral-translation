@@ -935,8 +935,6 @@ class Translate:
                     sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
                     return sorted_list
 
-
-
                     # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'manual'),reverse=True))
                     #
                     # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'time'), reverse=True))
