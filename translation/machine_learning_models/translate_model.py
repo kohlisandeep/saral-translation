@@ -906,6 +906,8 @@ class Translate:
 
         return sorted_lis
 
+
+
     def database_search_english(self, a):
         a = a.capitalize()
 
@@ -925,51 +927,35 @@ class Translate:
                     sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
                     return sorted_list
                 else:
-                    # for i in possible_match_dict:
-                    possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'manual'),reverse=True))
 
-                    possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'time'), reverse=True))
-
-                    possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'score'), reverse=True))
-
-                    # print(possible_match_dict)
+                    sorted_keys = sorted(possible_match_dict, key=lambda x: (possible_match_dict[x]['manual'], possible_match_dict[x]['score'], possible_match_dict[x]['time']),reverse=True)
                     temp_dict = dict()
-                    highest_match = next(iter(possible_match_dict))  #taking first sorted hindi word from the dictionary
-
-                    # print(highest_match)
-
-                    temp_dict[highest_match] = next(iter(possible_match_dict.items()))[1]
+                    highest_match = sorted_keys[0]
+                    temp_dict[highest_match] = possible_match_dict[highest_match]
                     sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
-                    # print(sorted_list)
                     return sorted_list
+
+
+
+                    # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'manual'),reverse=True))
+                    #
+                    # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'time'), reverse=True))
+                    #
+                    # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'score'), reverse=True))
+                    #
+                    #
+                    # highest_match = next(iter(possible_match_dict))  #taking first sorted hindi word from the dictionary
+                    # temp_dict = dict()
+                    # temp_dict[highest_match] = next(iter(possible_match_dict.items()))[1]
+                    #
+                    # sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
+                    # return sorted_list
 
             else:
                 return self.hin_translate(a)
         except Exception as e:
             # To work
             print(e)
-    #
-    # def database_search_english(self, a):
-    #     a = a.capitalize()
-    #
-    #     try:
-    #         """
-    #         Try to find the word in the database, if it does not exists directly call algorithm function
-    #         """
-    #         possible_match = EnglishToHindiTranslation.objects.filter(english__exact=a).first()
-    #         if possible_match is not None:
-    #             possible_match_dict = possible_match.hindi
-    #             possible_match_dict = sorted(possible_match_dict.items(), key=lambda item: item[1], reverse=True)
-    #             highest_match = next(iter(possible_match_dict))
-    #             temp_dict = dict()
-    #             temp_dict[highest_match[0]] = highest_match[1]
-    #             sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
-    #             return sorted_list
-    #         else:
-    #             return self.hin_translate(a)
-    #     except Exception as e:
-    #         # To work
-    #         print(e)
 
     def tran(self, w_list, wrd):
         for i in w_list:
