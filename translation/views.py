@@ -15,9 +15,19 @@ from rest_framework import viewsets
 from rest_framework import status
 from datetime import datetime
 from pytz import timezone
+from django.views import View
 
 
 # Create your views here.
+
+class Home(View):
+    def get(self,request):
+        return render(request, 'translation/home.html')
+
+    def index(request):
+        response=requests.get('https://api.covid19api.com/countries').json()
+        return render(request,'index.html',{'response':response})
+
 
 class EndpointView(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """View to get all the available endpoints"""
@@ -81,7 +91,6 @@ class TranslateStringView(views.APIView):
             # print(data)
             for i in data:
                 # print(i) # in data[i] we are getting score and in i we are getting word
-
                 if isinstance(data[i], int):
                     ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
                     score=data[i]
