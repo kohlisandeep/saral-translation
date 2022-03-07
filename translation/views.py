@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework import mixins, viewsets, views
 from rest_framework.templatetags.rest_framework import data
 
-from .models import Endpoint, MLAlgorithm, MLRequest, EnglishToHindiTranslation
+from .models import Endpoint, MLAlgorithm, MLRequest, EnglishToHindiTranslation, myuploadfile
 from .serializers import MLAlgorithmSerializer, EndpointSerializer, MLRequestSerializer, PersonDataSerialzer
 from .machine_learning_models.translate_model import Translate
 from rest_framework.response import Response
@@ -16,6 +16,14 @@ from rest_framework import status
 from datetime import datetime
 from pytz import timezone
 from django.views import View
+from openpyxl import load_workbook
+from openpyxl.writer.excel import save_virtual_workbook
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+from .serializers import UploadSerializer
+from django.shortcuts import render, HttpResponse, redirect
+
+
 
 
 # Create your views here.
@@ -24,9 +32,6 @@ class Home(View):
     def get(self,request):
         return render(request, 'translation/home.html')
 
-    def index(request):
-        response=requests.get('https://api.covid19api.com/countries').json()
-        return render(request,'index.html',{'response':response})
 
 
 class EndpointView(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -116,6 +121,8 @@ class TranslateStringView(views.APIView):
                 ind_time = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
                 data.__setitem__(converted_word_array[i], {'manual': False, 'score': 10, 'time': ind_time})
 
+        data = sorted(data, key=lambda x: (data[x]['manual'], data[x]['score'], data[x]['time']),reverse=True)
+
         return Response({'status': 'Success', 'data': data}, status=200)
 
 
@@ -134,3 +141,52 @@ class SearchAndUpdateAPIView(APIView):
                 add_new = EnglishToHindiTranslation.objects.create(english=key, hindi=data[key])
 
         return Response({'status': 'Success', 'message': 'Saved Successfully'}, status=200)
+
+
+class ExcelFileTranslate(views.APIView):
+    # def get(self,request):
+    # #     data=request.data
+    # #     data=json.dumps(data)
+    #     word = request.query_params.get('query')
+    #     return Response({'status': 'Success', 'data': word}, status=200)
+
+    def post(self, request):
+        # data = request.data
+        # data = json.dumps(data)
+        translate_obj = Translate()
+        translated_data = translate_obj.excel_english_to_hindi()
+        return Response({'status': 'Success', 'data': data}, status=200)
+
+
+class send_files(views.APIView):
+    current_datetime = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
+
+    print(current_datetime)
+
+    def post(self, request):
+        name = request.POST.get("filename")
+        myfile = request.FILES.getlist("uploadfiles")
+
+        for f in myfile:
+            translate_obj = Translate()
+            myuploadfile(f_name=name, myfiles=f).save()
+            translated_data = translate_obj.excel_english_to_hindi(f)
+
+        current_datetime =  datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
+
+        print(current_datetime)
+
+        return redirect('/')
+
+# def send_files(request):
+#     if request.method == "POST":
+#         name = request.POST.get("filename")
+#         myfile = request.FILES.getlist("uploadfiles")
+#
+#         for f in myfile:
+#             myuploadfile(f_name=name, myfiles=f).save()
+#
+#         return redirect('/')
+
+
+

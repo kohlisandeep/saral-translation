@@ -2,6 +2,7 @@ from abc import ABC
 
 from rest_framework import serializers
 from .models import Endpoint, EnglishToHindiTranslation, MLAlgorithm, MLRequest
+from rest_framework.serializers import Serializer, FileField
 
 
 class EndpointSerializer(serializers.ModelSerializer):
@@ -32,4 +33,8 @@ class PersonDataSerialzer(serializers.Serializer):
     relation_name = serializers.CharField(max_length=1024, allow_blank=True,allow_null=True,required=False)
 
 
-
+# Serializers define the API representation.
+class UploadSerializer(Serializer):
+    file_uploaded = FileField()
+    class Meta:
+        fields = ['file_uploaded']

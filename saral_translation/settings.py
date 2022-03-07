@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
+    # 'corsheaders',
     'translation',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -149,5 +150,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'translation/static'
+]
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR/'media'
+
 
 CORS_ORIGIN_ALLOW_ALL = True

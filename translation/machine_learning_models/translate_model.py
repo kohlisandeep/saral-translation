@@ -9,6 +9,9 @@ import pandas as pd
 from translation.models import EnglishToHindiTranslation
 from django.contrib.admin.utils import flatten
 from operator import getitem
+import time
+
+
 
 class Translate:
     """
@@ -906,8 +909,6 @@ class Translate:
 
         return sorted_lis
 
-
-
     def database_search_english(self, a):
         a = a.capitalize()
 
@@ -919,37 +920,22 @@ class Translate:
             if possible_match is not None:
                 possible_match_dict = possible_match.hindi
 
-                if isinstance(next(iter(possible_match_dict.items()))[1],int):
+                if isinstance(next(iter(possible_match_dict.items()))[1], int):
                     possible_match_dict = sorted(possible_match_dict.items(), key=lambda item: item[1], reverse=True)
-                    highest_match = next(iter(possible_match_dict)) #making this tuple
+                    highest_match = next(iter(possible_match_dict))  # making this tuple
                     temp_dict = dict()
                     temp_dict[highest_match[0]] = highest_match[1]
                     sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
                     return sorted_list
                 else:
-
-                    sorted_keys = sorted(possible_match_dict, key=lambda x: (possible_match_dict[x]['manual'], possible_match_dict[x]['score'], possible_match_dict[x]['time']),reverse=True)
+                    sorted_keys = sorted(possible_match_dict, key=lambda x: (
+                    possible_match_dict[x]['manual'], possible_match_dict[x]['score'], possible_match_dict[x]['time']),
+                                         reverse=True)
                     temp_dict = dict()
                     highest_match = sorted_keys[0]
                     temp_dict[highest_match] = possible_match_dict[highest_match]
                     sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
                     return sorted_list
-
-
-                    # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'manual'),reverse=True))
-                    #
-                    # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'time'), reverse=True))
-                    #
-                    # possible_match_dict = dict(sorted(possible_match_dict.items(),key=lambda item: getitem(item[1], 'score'), reverse=True))
-                    #
-                    #
-                    # highest_match = next(iter(possible_match_dict))  #taking first sorted hindi word from the dictionary
-                    # temp_dict = dict()
-                    # temp_dict[highest_match] = next(iter(possible_match_dict.items()))[1]
-                    #
-                    # sorted_list = self.eng_hindi_tansliteration(temp_dict, a)
-                    # return sorted_list
-
             else:
                 return self.hin_translate(a)
         except Exception as e:
@@ -981,3 +967,92 @@ class Translate:
         return sorted(
             list(set(filter(None, re.sub("\s+", " ", re.sub("[^a-zA-Z]", " ", str(sentence))).strip().split(" ")))),
             key=len, reverse=True)
+
+
+    def excel_english_to_hindi(self,f):
+        file = f
+        df1 = pd.read_excel(file)
+        lis_unique = []
+        # files = glob.glob(r'C:\Users\Dell\Downloads\Ravi\*')
+        # for file in files:
+
+        st = time.time()
+        # columns = ["Name", "Father's/Husband's Name"]
+        # columns = ['Name Cleaned']
+        for column in df1.columns:
+            # for column in columns:
+            print(column)
+            unique = list(df1[column].drop_duplicates())
+            lis_unique = lis_unique + unique
+
+        print(time.time() - st)
+
+        lis_split = []
+        for i in range(0, len(lis_unique)):
+            lis_split.append(re.split(r"[^a-zA-Z]", str(lis_unique[i])))
+        print(time.time() - st)
+
+        flatlist = []
+        for elem in lis_split:
+            flatlist.extend(elem)
+        lis_dis = set(flatlist)
+        lis_dis = list(lis_dis)
+        print(time.time() - st)
+
+        for i in range(0, len(lis_dis)):
+            lis_dis[i] = lis_dis[i].lower()
+
+        print(time.time() - st)
+        lis_dis_lower = set(lis_dis)
+        print(time.time() - st)
+        print(len(lis_dis_lower))
+
+        lis1 = []
+        d_new = {}
+        count = 0
+
+        for key in lis_dis_lower:
+
+            count = count + 1
+            print(count)
+            try:
+
+                d_new[key] = self.database_search_english(key)[0]
+
+            except:
+                lis = key
+                if lis not in lis1:
+                    lis1.append(lis)
+                continue
+
+        global settemp
+        settemp = set()
+
+        def tran(w_list, wrd):
+
+            for i in w_list:
+                try:
+                    wrd = wrd.replace(i, d_new[i.lower()])
+                except:
+                    # settemp.add((i))
+                    wrd = wrd.replace(i, "")
+                    continue
+            return wrd
+
+        # df1 = pd.read_excel(r'D:\Data\Translation_Files\Uttarakhand Data\7594-Uttarakhand-Karyakarta-CountryState--Shakti_Kendra-Core_Sangathan-Karyakarni-.xlsx')
+        # columns = ['Name Cleaned']
+        for column in df1.columns:
+            print(column)
+            if column == "BM_split":
+                continue
+            # df1[column] = df1[column].apply(lambda x: re.sub("\s+", " ",re.sub("[^A-Za-z]", " ", x)).strip().title() if x==x else np.nan)
+            df1['BM_split'] = df1[column].apply(lambda x: sorted(
+                list(set(filter(None, re.sub("\s+", " ", re.sub("[^a-zA-Z]", " ", str(x))).strip().split(" ")))),
+                key=len, reverse=True) if x == x else [])
+
+            df1[column + '_Hindi'] = df1[["BM_split", column]].apply(lambda x: tran(*x), axis=1)
+            del df1["BM_split"]
+        # df1.to_excel(r'D:\Data\Translation_Files\suyash_translate_areaidentifier_Hindi.xlsx', index= False)
+        print(df1)
+        df1.to_excel('/home/this/Downloads/pokemon_check.xlsx', index=False)
+

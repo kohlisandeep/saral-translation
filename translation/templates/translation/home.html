@@ -21,18 +21,18 @@
     padding: 0 15px;" class="maia-nav" id="maia-nav-x" role="navigation">
         <div class="maia-aux">
             <center>
-            <ul>
-                <li>Home</li>
-                <span class="tab"></span>
-                <li>Try it out
-                </li>
-                <span class="tab"></span>
-                <li>On Translation
-                </li>
-                <span class="tab"></span>
-                <li>On Translation Services</li>
-            </ul>
-                </center>
+                <ul>
+                    <li>Home</li>
+                    <span class="tab"></span>
+                    <li>Try it out
+                    </li>
+                    <span class="tab"></span>
+                    <li>On Translation
+                    </li>
+                    <span class="tab"></span>
+                    <li>On Translation Services</li>
+                </ul>
+            </center>
         </div>
     </div>
     <br>
@@ -43,7 +43,8 @@
             <div class="goog-inline-block goog-menu-button-outer-box">
                 <div class="goog-inline-block goog-menu-button-inner-box">
                     <div class="goog-inline-block goog-menu-button-caption" id=":g3" role="option" aria-selected="true"
-                         aria-setsize="131" aria-posinset="44"><center>English to Hindi Transliteration</center>
+                         aria-setsize="131" aria-posinset="44">
+                        <center>English to Hindi Transliteration</center>
                     </div>
                     <div class="goog-inline-block goog-menu-button-dropdown">&nbsp;</div>
                 </div>
@@ -69,15 +70,26 @@
     <!--<textarea class="editor-box" id="demobox" dir="ltr"></textarea>-->
     <!--<form action="{% url 'http://127.0.0.1:8000" method="GET">-->
     <!--</form>-->
+    <div class="container">
+        <center><textarea id="translation_area" placeholder="यहाँ टाइप करें ... (e.g Aap kasai hai)"
+                          style="line-height: 1.5em; font-family: Arial, Helvetica, sans-serif; font-size: 14px;"></textarea>
+        </center>
 
-    <center><textarea id="lan" onkeyup="myFunction()" placeholder="यहाँ टाइप करें ... (e.g Aap kasai hai)"
-              style="line-height: 1.5em; font-family: Arial, Helvetica, sans-serif; font-size: 14px;"></textarea>
-    </center>
+        <div id="hindi_words_list"></div>
 
-    <form id="hindi_words_list"></form>
+        <h1 id="head"></h1>
+    </div>
 
-    <h1 id="head"></h1>
 
 </div>
+
+ <center>
+    <form action="{% url 'uploads' %}" method="POST" enctype="multipart/form-data">
+        <input type="text" name="filename"  placeholder="enter your file name" >
+        <input type="file" multiple name="uploadfiles" >
+        {% csrf_token %}
+        <button type="submit">Upload File</button>
+    </form>
+ </center>
 
 {% endblock %}
