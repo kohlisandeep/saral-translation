@@ -1,6 +1,9 @@
 {% extends 'translation/base.html' %}
 {% block title %}Home{% endblock %}
 
+{% block style %}
+{% endblock %}
+
 
 {% block main_content %}
 <div class="container">
@@ -22,15 +25,15 @@
         <div class="maia-aux">
             <center>
                 <ul>
-                    <li>Home</li>
+                    <a href="/"><li style="color:white">Home</li></a>
                     <span class="tab"></span>
-                    <li>Try it out
-                    </li>
+                    <a href="/"><li style="color:white">Try it out
+                    </li></a>
                     <span class="tab"></span>
-                    <li>On Translation
-                    </li>
+                    <a href="/"><li style="color:white">On Translation
+                    </li></a>
                     <span class="tab"></span>
-                    <li>On Translation Services</li>
+                    <a href="/"><li style="color:white">On Translation Services</li></a>
                 </ul>
             </center>
         </div>
@@ -75,9 +78,11 @@
                           style="line-height: 1.5em; font-family: Arial, Helvetica, sans-serif; font-size: 14px;"></textarea>
         </center>
 
-        <div id="hindi_words_list"></div>
+        <div  id="hindi_words_list" style="position:absolute">
+        </div>
+<!--        ;left: 450px; top: 235px;-->
 
-        <h1 id="head"></h1>
+
     </div>
 
 
@@ -88,8 +93,35 @@
         <input type="text" name="filename"  placeholder="enter your file name" >
         <input type="file" multiple name="uploadfiles" >
         {% csrf_token %}
-        <button type="submit">Upload File</button>
+        <button class="btn btn-primary" type="submit">Upload File</button>
     </form>
  </center>
 
+
+<!-- <center>-->
+<!--    <form action="{% url 'uploads' %}" method="POST" enctype="multipart/form-data">-->
+
+<!--           <div class="form-group">-->
+<!--      <label for="focusedInput">Focused</label>-->
+<!--&lt;!&ndash;      <input class="form-control" id="focusedInput" type="text">&ndash;&gt;-->
+<!--               <input class="form-control" id="focusedInput" type="text" name="filename"  placeholder="enter your file name" width="48" height="48" >-->
+<!--    </div>-->
+<!--        <input type="file" multiple name="uploadfiles" >-->
+<!--        {% csrf_token %}-->
+<!--        <button class="btn btn-primary" type="submit">Upload File</button>-->
+<!--    </form>-->
+<!-- </center>-->
+
+
+
+
+
+
 {% endblock %}
+
+
+
+
+
+
+

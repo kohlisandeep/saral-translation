@@ -1054,5 +1054,6 @@ class Translate:
             del df1["BM_split"]
         # df1.to_excel(r'D:\Data\Translation_Files\suyash_translate_areaidentifier_Hindi.xlsx', index= False)
         print(df1)
-        df1.to_excel('/home/this/Downloads/pokemon_check.xlsx', index=False)
+        # df1.to_excel('/home/this/Downloads/pokemon_check.xlsx', index=False)
+        return df1
 

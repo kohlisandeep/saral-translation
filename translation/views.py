@@ -1,5 +1,6 @@
 import json
-
+from io import StringIO
+from django.http import FileResponse
 from django.shortcuts import render
 from rest_framework import mixins, viewsets, views
 from rest_framework.templatetags.rest_framework import data
@@ -22,6 +23,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from .serializers import UploadSerializer
 from django.shortcuts import render, HttpResponse, redirect
+from django.core.files import File
 
 
 
@@ -159,34 +161,26 @@ class ExcelFileTranslate(views.APIView):
 
 
 class send_files(views.APIView):
-    current_datetime = datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
-
-    print(current_datetime)
 
     def post(self, request):
         name = request.POST.get("filename")
         myfile = request.FILES.getlist("uploadfiles")
 
         for f in myfile:
+            # name=f.filename
+            # print(name)
             translate_obj = Translate()
-            myuploadfile(f_name=name, myfiles=f).save()
+
             translated_data = translate_obj.excel_english_to_hindi(f)
+            now = datetime.now()
+            translated_data.to_excel('media/{}_{}.xlsx'.format(name,now), index=False)
 
-        current_datetime =  datetime.now(timezone("Asia/Kolkata")).strftime('%Y-%m-%d %H:%M')
+            myuploadfile(f_name=name, uploaded_file=f,translated_file='{}_{}.xlsx'.format(name,now)).save()
 
-        print(current_datetime)
 
-        return redirect('/')
+        response = FileResponse(open('media/{}_{}.xlsx'.format(name,now), 'rb'))
 
-# def send_files(request):
-#     if request.method == "POST":
-#         name = request.POST.get("filename")
-#         myfile = request.FILES.getlist("uploadfiles")
-#
-#         for f in myfile:
-#             myuploadfile(f_name=name, myfiles=f).save()
-#
-#         return redirect('/')
+        return response
 
 
 
