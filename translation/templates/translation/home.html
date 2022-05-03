@@ -2,6 +2,26 @@
 {% block title %}Home{% endblock %}
 
 {% block style %}
+ .loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 {% endblock %}
 
 
@@ -89,13 +109,16 @@
 </div>
 
  <center>
-    <form action="{% url 'uploads' %}" method="POST" enctype="multipart/form-data">
-        <input type="text" name="filename"  placeholder="enter your file name" >
-        <input type="file" multiple name="uploadfiles" >
+    <form action="{% url 'uploads' %}" onsubmit="submit_button()" method="POST" enctype="multipart/form-data">
+        <input required type="text" name="filename"  placeholder="enter your file name" >
+        <input required type="file" multiple name="uploadfiles" >
         {% csrf_token %}
         <button class="btn btn-primary" type="submit">Upload File</button>
     </form>
  </center>
+
+
+<center><div id="lll" class="loader" style="display:none"></div></center>
 
 
 <!-- <center>-->

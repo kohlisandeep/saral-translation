@@ -160,6 +160,12 @@ class ExcelFileTranslate(views.APIView):
         return Response({'status': 'Success', 'data': data}, status=200)
 
 
+
+class stop_loader(View):
+    def get(self,request):
+        return render(request, 'translation/check.html')
+
+
 class send_files(views.APIView):
 
     def post(self, request):
@@ -179,8 +185,11 @@ class send_files(views.APIView):
 
 
         response = FileResponse(open('media/{}_{}.xlsx'.format(name,now), 'rb'))
+        o=stop_loader()
+        o.get(request)
 
+
+        # return render(request, 'translation/check.html',response)
         return response
-
 
 
